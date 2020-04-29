@@ -30,14 +30,11 @@ impl System {
     pub fn new(gl: &WebGl2RenderingContext) -> Self {
         let mut programs = HashMap::new();
 
-        let basic_shader =
-            Shader::new(gl, BASIC_VS, BASIC_FS).unwrap();
+        let basic_shader = Shader::new(gl, BASIC_VS, BASIC_FS).unwrap();
 
-        let sphere_shader =
-            Shader::new(gl, SPHERE_VS, LIGHTING_FS).unwrap();
+        let sphere_shader = Shader::new(gl, SPHERE_VS, LIGHTING_FS).unwrap();
 
-        let cylinder_shader =
-            Shader::new(gl, CYLINDER_VS, LIGHTING_FS).unwrap();
+        let cylinder_shader = Shader::new(gl, CYLINDER_VS, LIGHTING_FS).unwrap();
 
         let active_program = RefCell::new(Kind::Basic);
         gl.use_program(Some(&basic_shader.program));

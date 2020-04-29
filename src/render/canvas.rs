@@ -3,8 +3,8 @@ use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use wasm_bindgen::JsValue;
-use web_sys::*;
 use web_sys::WebGl2RenderingContext as GL;
+use web_sys::*;
 
 use crate::app::App;
 use crate::app::Msg;
@@ -31,7 +31,6 @@ fn init_canvas(
     width: u32,
     height: u32,
 ) -> Result<HtmlCanvasElement, JsValue> {
-
     let window = window().unwrap();
     let document = window.document().unwrap();
 
@@ -60,7 +59,7 @@ fn init_canvas(
         app_div.set_id(app_div_id);
         app_div.dyn_into()?
     };
-    
+
     app_div.style().set_property("display", "flex")?;
     app_div.append_child(&canvas)?;
 
@@ -196,9 +195,13 @@ fn attach_keypress_handler(canvas: &HtmlCanvasElement, app: Rc<App>) -> Result<(
 
     let handler = Closure::wrap(Box::new(handler) as Box<dyn FnMut(_)>);
 
-    canvas.add_event_listener_with_callback_and_bool("keydown", handler.as_ref().unchecked_ref(), true)?;
+    canvas.add_event_listener_with_callback_and_bool(
+        "keydown",
+        handler.as_ref().unchecked_ref(),
+        true,
+    )?;
 
     handler.forget();
-    
+
     Ok(())
 }

@@ -4,8 +4,8 @@ use wasm_bindgen::prelude::*;
 use web_sys::WebGl2RenderingContext;
 
 mod app;
-mod render;
 mod molecule;
+mod render;
 
 #[wasm_bindgen]
 pub struct FerricyanideDisplay {
@@ -20,13 +20,13 @@ impl FerricyanideDisplay {
     #[must_use]
     #[wasm_bindgen(constructor)]
     pub fn new(app_div_id: &str, width: u32, height: u32) -> Self {
-
         #[cfg(debug_assertions)]
         console_error_panic_hook::set_once();
 
         let app = Rc::new(app::App::new(width, height));
 
-        let gl = Rc::new(render::canvas::create_webgl_context(&app, app_div_id, width, height).unwrap());
+        let gl =
+            Rc::new(render::canvas::create_webgl_context(&app, app_div_id, width, height).unwrap());
 
         let renderer = render::WebRenderer::new(&gl);
 
@@ -37,7 +37,8 @@ impl FerricyanideDisplay {
     pub fn add_molecule(&self, contents: Vec<u8>, format: &str) -> Result<(), JsValue> {
         use molecule::Molecule;
 
-        let s = String::from_utf8(contents).expect("Found invalid UTF-8 character in Molecule file");
+        let s =
+            String::from_utf8(contents).expect("Found invalid UTF-8 character in Molecule file");
         if let Ok(molecule) = Molecule::from_string_with_format(&s, format) {
             self.app.store.borrow_mut().add_molecule(molecule);
         }

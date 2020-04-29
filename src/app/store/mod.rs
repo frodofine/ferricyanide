@@ -84,17 +84,15 @@ impl State {
             Msg::Zoom(zoom) => {
                 self.camera.zoom(*zoom);
             }
-            Msg::Key(key, _state) => {
-                match key.as_ref() {
-                    "KeyW" => self.camera.pan_up_down(-0.1),
-                    "KeyA" => self.camera.pan_left_right(0.1),
-                    "KeyS" => self.camera.pan_up_down(0.1),
-                    "KeyD" => self.camera.pan_left_right(-0.1),
-                    "KeyQ" => self.camera.rotate_camera(0.1),
-                    "KeyE" => self.camera.rotate_camera(-0.1),
-                    _ => {},
-                }
-            }
+            Msg::Key(key, _state) => match key.as_ref() {
+                "KeyW" => self.camera.pan_up_down(-0.1),
+                "KeyA" => self.camera.pan_left_right(0.1),
+                "KeyS" => self.camera.pan_up_down(0.1),
+                "KeyD" => self.camera.pan_left_right(-0.1),
+                "KeyQ" => self.camera.rotate_camera(0.1),
+                "KeyE" => self.camera.rotate_camera(-0.1),
+                _ => {}
+            },
         }
     }
 }

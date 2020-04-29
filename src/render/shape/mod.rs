@@ -2,13 +2,13 @@ use js_sys::WebAssembly;
 use wasm_bindgen::JsCast;
 use web_sys::WebGl2RenderingContext as GL;
 
-use crate::render::shader::Shader;
-use crate::render::shader::Kind;
 use crate::app::State;
+use crate::render::shader::Kind;
+use crate::render::shader::Shader;
 
-pub mod triangle;
-pub mod sphere;
 pub mod cylinder;
+pub mod sphere;
+pub mod triangle;
 
 pub trait Render<'a> {
     fn shader_kind() -> Kind;

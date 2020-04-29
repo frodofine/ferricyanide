@@ -34,7 +34,7 @@ impl Element {
         #![allow(clippy::identity_op, clippy::cast_precision_loss)]
 
         use Element::*;
-        let color : u32 = match self {
+        let color: u32 = match self {
             Hydrogen => 0xD0_D0_D0_FF,
             Helium => 0xD9_FF_FF_FF,
             Lithium => 0xCC_80_FF_FF,
@@ -48,10 +48,11 @@ impl Element {
             Other => 0x00_00_00_FF,
         };
 
-        [((color & 0xFF_00_00_00) >> 24) as f32 / 255.0,
-         ((color & 0x00_FF_00_00) >> 16) as f32 / 255.0,
-         ((color & 0x00_00_FF_00) >> 8) as f32 / 255.0,
-         ((color & 0x00_00_00_FF) >> 0) as f32 / 255.0,
+        [
+            ((color & 0xFF_00_00_00) >> 24) as f32 / 255.0,
+            ((color & 0x00_FF_00_00) >> 16) as f32 / 255.0,
+            ((color & 0x00_00_FF_00) >> 8) as f32 / 255.0,
+            ((color & 0x00_00_00_FF) >> 0) as f32 / 255.0,
         ]
     }
 }

@@ -2,13 +2,13 @@ use web_sys::WebGl2RenderingContext as GL;
 use web_sys::*;
 
 use crate::app::State;
-use crate::render::shape::Render;
-use crate::render::shader::Shader;
 use crate::render::shader::Kind;
+use crate::render::shader::Shader;
+use crate::render::shape::Render;
 
 pub struct Triangle<'a> {
     pub verticies: [f32; 9],
-    pub colors: [f32;12],
+    pub colors: [f32; 12],
     pub shader: &'a Shader,
 }
 
@@ -37,15 +37,13 @@ impl<'a> Render<'a> for Triangle<'a> {
     }
 
     fn render(&self, gl: &WebGl2RenderingContext, state: &State) {
+        use webgl_matrix::Matrix;
         let shader = self.shader();
 
         let model_uni = shader.get_uniform_location(gl, "model");
-        let model = [1.0, 0.0, 0.0, 0.0,
-                     0.0, 1.0, 0.0, 0.0,
-                     0.0, 0.0, 1.0, 0.0,
-                     0.0, 0.0,-0.5, 1.0];
+        let model = webgl_matrix::Mat4::identity();
         gl.uniform_matrix4fv_with_f32_array(model_uni.as_ref(), false, &model);
-        
+
         let view_uni = shader.get_uniform_location(gl, "view");
         let view = &state.camera().view();
         gl.uniform_matrix4fv_with_f32_array(view_uni.as_ref(), false, view);

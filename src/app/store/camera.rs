@@ -1,4 +1,4 @@
-use webgl_matrix::{Vector, ProjectionMatrix, Mat4, Vec3};
+use webgl_matrix::{Mat4, ProjectionMatrix, Vec3, Vector};
 
 fn cross(u: &Vec3, v: &Vec3) -> Vec3 {
     /*
@@ -14,7 +14,6 @@ fn cross(u: &Vec3, v: &Vec3) -> Vec3 {
 }
 
 fn look_at_rh(eye: &Vec3, target: &Vec3, up: &Vec3) -> Mat4 {
-    
     let z = eye.sub(target);
     let zn = z.scale(1.0 / z.mag());
 
@@ -22,12 +21,24 @@ fn look_at_rh(eye: &Vec3, target: &Vec3, up: &Vec3) -> Mat4 {
     let xn = x.scale(1.0 / x.mag());
 
     let yn = cross(&zn, &xn);
-    
+
     [
-        xn[0], yn[0], zn[0], 0.0,
-        xn[1], yn[1], zn[1], 0.0,
-        xn[2], yn[2], zn[2], 0.0,
-        -xn.dot(eye), -yn.dot(eye), -zn.dot(eye), 1.0,
+        xn[0],
+        yn[0],
+        zn[0],
+        0.0,
+        xn[1],
+        yn[1],
+        zn[1],
+        0.0,
+        xn[2],
+        yn[2],
+        zn[2],
+        0.0,
+        -xn.dot(eye),
+        -yn.dot(eye),
+        -zn.dot(eye),
+        1.0,
     ]
 }
 
@@ -42,11 +53,15 @@ pub struct Camera {
 
 impl Camera {
     pub fn new(width: u32, height: u32) -> Self {
-
         #![allow(clippy::cast_precision_loss)]
         let aspect_ratio = (width as f32) / (height as f32);
         Self {
-            projection: Mat4::create_perspective(60.0 * std::f32::consts::PI / 180.0, aspect_ratio, 0.1, 1000.0),
+            projection: Mat4::create_perspective(
+                60.0 * std::f32::consts::PI / 180.0,
+                aspect_ratio,
+                0.1,
+                1000.0,
+            ),
             orbit_radius: 9.0,
             target_position: [0.0, 0.0, 0.0],
             left_right_radians: 0.0,
@@ -63,8 +78,8 @@ impl Camera {
         use std::f32::consts::PI;
 
         match self.up_down_radians {
-            x if (-PI/2.0 .. PI/2.0).contains(&x) => false,
-            x if (3.0*PI/2.0 .. 2.0*PI).contains(&x) => false,
+            x if (-PI / 2.0..PI / 2.0).contains(&x) => false,
+            x if (3.0 * PI / 2.0..2.0 * PI).contains(&x) => false,
             _ => true,
         }
     }
@@ -75,10 +90,14 @@ impl Camera {
         let direction = if self.is_y_inverted() {
             [self.camera_angle.sin(), -(self.camera_angle.cos()), 0.0]
         } else {
-            [self.camera_angle.sin(),   self.camera_angle.cos(), 0.0]
+            [self.camera_angle.sin(), self.camera_angle.cos(), 0.0]
         };
 
-        look_at_rh(&new_eye, &self.target_position, &direction.scale(1.0 / direction.mag()))
+        look_at_rh(
+            &new_eye,
+            &self.target_position,
+            &direction.scale(1.0 / direction.mag()),
+        )
     }
 
     pub fn get_eye_pos(&self) -> Vec3 {

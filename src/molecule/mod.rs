@@ -47,7 +47,7 @@ pub fn read_xyz(file: &str) -> Result<Molecule, Box<dyn Error>> {
                 let y: f32 = unwrap_abort(line_split.get(2)).parse()?;
                 let z: f32 = unwrap_abort(line_split.get(3)).parse()?;
 
-                atoms.push( Rc::new(Atom {
+                atoms.push(Rc::new(Atom {
                     position: [x, y, z],
                     element: Element::from(element),
                 }))
@@ -62,7 +62,7 @@ pub fn read_xyz(file: &str) -> Result<Molecule, Box<dyn Error>> {
     let mut bonds = Vec::<[Rc<Atom>; 2]>::new();
 
     for i in 0..atoms.len() {
-        for j in (i+1)..atoms.len() {
+        for j in (i + 1)..atoms.len() {
             let atom_1 = unwrap_abort(atoms.get(i));
             let atom_2 = unwrap_abort(atoms.get(j));
             let dist_vec = atom_1.position.sub(&atom_2.position);
@@ -72,13 +72,7 @@ pub fn read_xyz(file: &str) -> Result<Molecule, Box<dyn Error>> {
         }
     }
 
-    Ok(
-        Molecule {
-            atoms,
-            bonds,
-            name,
-        }
-    )
+    Ok(Molecule { atoms, bonds, name })
 }
 
 #[derive(Debug)]
@@ -92,26 +86,30 @@ impl std::fmt::Display for UnsupportedFormat {
     }
 }
 
-impl std::error::Error for UnsupportedFormat { }
+impl std::error::Error for UnsupportedFormat {}
 
 impl Molecule {
     pub fn center(&self) -> [f32; 3] {
         #![allow(clippy::cast_precision_loss)]
         use webgl_matrix::Vector;
 
-        self.atoms.iter().fold(
-            [0.0, 0.0, 0.0], |acc, x| {[
-                acc[0] + x.position[0],
-                acc[1] + x.position[1],
-                acc[2] + x.position[2],
-        ]}).scale(1.0 / self.atoms.len() as f32)
+        self.atoms
+            .iter()
+            .fold([0.0, 0.0, 0.0], |acc, x| {
+                [
+                    acc[0] + x.position[0],
+                    acc[1] + x.position[1],
+                    acc[2] + x.position[2],
+                ]
+            })
+            .scale(1.0 / self.atoms.len() as f32)
     }
 
     pub fn from_string_with_format(contents: &str, format: &str) -> Result<Self, Box<dyn Error>> {
         match format {
             "xyz" => read_xyz(contents),
-            _ => Err(Box::new(UnsupportedFormat{
-                format: format.to_owned()
+            _ => Err(Box::new(UnsupportedFormat {
+                format: format.to_owned(),
             })),
         }
     }

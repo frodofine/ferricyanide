@@ -70,7 +70,8 @@ args = ["clippy", "--all-features", "--", "--warn", "warnings", "--warn", "clipp
 [tasks.fmt]
 description = "Format with rustfmt"
 workspace = false
-dependencies = ["fmt"]
+command = "cargo"
+args = ["fmt"]
 
 
 # ---- TEST ----

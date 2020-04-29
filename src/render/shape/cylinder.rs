@@ -1,11 +1,11 @@
 use web_sys::WebGl2RenderingContext as GL;
 use web_sys::*;
-use webgl_matrix::{Mat4, Matrix, Vector, Vec3};
+use webgl_matrix::{Mat4, Matrix, Vec3, Vector};
 
 use crate::app::State;
-use crate::render::shape::Render;
-use crate::render::shader::Shader;
 use crate::render::shader::Kind;
+use crate::render::shader::Shader;
+use crate::render::shape::Render;
 
 fn cross(u: &Vec3, v: &Vec3) -> Vec3 {
     /*
@@ -25,14 +25,14 @@ pub struct VBO {
     pub indicies: Vec<u16>,
 }
 
-pub struct Cylinder<'a,'b> {
+pub struct Cylinder<'a, 'b> {
     pub object: &'b VBO,
     pub shader: &'a Shader,
     pub radius: f32,
-    pub color_start: [f32;4],
-    pub color_end: [f32;4],
-    pub position_start: [f32;3],
-    pub position_end: [f32;3],
+    pub color_start: [f32; 4],
+    pub color_end: [f32; 4],
+    pub position_start: [f32; 3],
+    pub position_end: [f32; 3],
 }
 
 impl VBO {
@@ -43,7 +43,6 @@ impl VBO {
 
         let mut vertex_position_data = Vec::<f32>::new();
         let mut index_data = Vec::<u16>::new();
-
 
         // Extra value is to force completion of the circle
         for i in 0..slices {
@@ -65,7 +64,7 @@ impl VBO {
             index_data.push(i * 2 + 0);
             index_data.push(i * 2 + 2);
             index_data.push(i * 2 + 1);
- 
+
             index_data.push(i * 2 + 2);
             index_data.push(i * 2 + 1);
             index_data.push(i * 2 + 3);
@@ -86,7 +85,7 @@ impl VBO {
     }
 }
 
-impl<'a,'b> Render<'a> for Cylinder<'a,'b> {
+impl<'a, 'b> Render<'a> for Cylinder<'a, 'b> {
     fn shader_kind() -> Kind {
         Kind::Cylinder
     }
@@ -97,7 +96,7 @@ impl<'a,'b> Render<'a> for Cylinder<'a,'b> {
 
     fn buffer_attributes(&self, gl: &WebGl2RenderingContext) {
         #![allow(clippy::cast_sign_loss)]
-        
+
         let shader = self.shader();
 
         let pos_attrib = gl.get_attrib_location(&shader.program, "position");
@@ -123,20 +122,26 @@ impl<'a,'b> Render<'a> for Cylinder<'a,'b> {
         gl.uniform1f(radius_uni.as_ref(), self.radius);
 
         let color_start_uni = shader.get_uniform_location(gl, "color_start");
-        gl.uniform4f(color_start_uni.as_ref(),
-                    self.color_end[0], self.color_end[1],
-                    self.color_end[2], self.color_end[3]
+        gl.uniform4f(
+            color_start_uni.as_ref(),
+            self.color_end[0],
+            self.color_end[1],
+            self.color_end[2],
+            self.color_end[3],
         );
 
         let color_end_uni = shader.get_uniform_location(gl, "color_end");
-        gl.uniform4f(color_end_uni.as_ref(),
-                    self.color_start[0], self.color_start[1],
-                    self.color_start[2], self.color_start[3]
+        gl.uniform4f(
+            color_end_uni.as_ref(),
+            self.color_start[0],
+            self.color_start[1],
+            self.color_start[2],
+            self.color_start[3],
         );
 
         let model_uni = shader.get_uniform_location(gl, "model");
         let mut model = Mat4::identity();
-        
+
         let cross_prod = cross(&base_vector_norm, &[0.0, 0.0, 1.0]);
         let angle = -1.0 * base_vector_norm.dot(&[0.0, 0.0, 1.0]).acos();
 
@@ -144,7 +149,7 @@ impl<'a,'b> Render<'a> for Cylinder<'a,'b> {
         model.rotate(angle, &cross_prod);
 
         gl.uniform_matrix4fv_with_f32_array(model_uni.as_ref(), false, &model);
-        
+
         let view_uni = shader.get_uniform_location(gl, "view");
         let view = state.camera().view();
         gl.uniform_matrix4fv_with_f32_array(view_uni.as_ref(), false, &view);
@@ -155,8 +160,18 @@ impl<'a,'b> Render<'a> for Cylinder<'a,'b> {
 
         let camera_position_uni = shader.get_uniform_location(gl, "cameraPos");
         let camera_postion = &state.camera().get_eye_pos();
-        gl.uniform3f(camera_position_uni.as_ref(), camera_postion[0], camera_postion[1], camera_postion[2]);
+        gl.uniform3f(
+            camera_position_uni.as_ref(),
+            camera_postion[0],
+            camera_postion[1],
+            camera_postion[2],
+        );
 
-        gl.draw_elements_with_i32(GL::TRIANGLES, self.object.indicies.len() as i32, GL::UNSIGNED_SHORT, 0);
+        gl.draw_elements_with_i32(
+            GL::TRIANGLES,
+            self.object.indicies.len() as i32,
+            GL::UNSIGNED_SHORT,
+            0,
+        );
     }
 }
