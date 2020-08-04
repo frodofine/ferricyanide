@@ -4,6 +4,8 @@ use std::rc::Rc;
 pub mod element;
 pub use element::Element;
 
+pub mod octree;
+
 pub struct Atom {
     pub position: [f32; 3],
     pub element: Element,
