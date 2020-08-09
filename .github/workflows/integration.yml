@@ -10,8 +10,8 @@ jobs:
       - name: Install WASM pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
-      - name: Build in release mode
-        run: wasm-pack build --target web --out-name package
+      - name: Build in debug mode
+        run: wasm-pack build --dev --target web --out-name package
 
       - name: Ensure proper formatting
         run: cargo fmt -- --check

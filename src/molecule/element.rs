@@ -9,6 +9,8 @@ pub enum Element {
     Oxygen,
     Fluorine,
     Neon,
+    Phosphorus,
+    Sulfur,
     Other,
 }
 
@@ -26,6 +28,8 @@ impl Element {
             Oxygen => 0.66,
             Fluorine => 0.57,
             Neon => 0.58,
+            Phosphorus => 1.07,
+            Sulfur => 1.05,
             Other => 2.0,
         }
     }
@@ -45,6 +49,8 @@ impl Element {
             Oxygen => 0xFF_0D_0D_FF,
             Fluorine => 0x90_E0_50_FF,
             Neon => 0xB3_E3_F5_FF,
+            Phosphorus => 0xFF_80_00_FF,
+            Sulfur => 0xFF_FF_30_FF,
             Other => 0x00_00_00_FF,
         };
 
@@ -71,6 +77,8 @@ impl From<&str> for Element {
             "O" | "Oxygen" => Oxygen,
             "F" | "Fluorine" => Fluorine,
             "Ne" | "Neon" => Neon,
+            "S" | "Sulfur" => Sulfur,
+            "P" | "Phosphorus" => Phosphorus,
             _ => Other,
         }
     }

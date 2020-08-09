@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="canonical" href="https://html5-templates.com/" />
+	<title> Cyclic Sulfonylimine Reaction Mechanism </title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+		integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<link href="css/sticky-menu.css" rel="stylesheet">
+
+    <!-- Note the usage of `type=module` here as this is an ES6 module -->
+    <script type="module">
+
+        import init, { FerricyanideDisplay } from './pkg/package.js';
+  
+        async function run() {
+          await init();
+  
+          const ben_webClient  = new FerricyanideDisplay("benzene", 100, 100);
+          const acid_webClient  = new FerricyanideDisplay("acid", 500, 500);
+          const pinc_webClient  = new FerricyanideDisplay("pinc", 500, 500);
+
+          const c1_webClient  = new FerricyanideDisplay("cyclic_1", 500, 500);
+          const c2_webClient  = new FerricyanideDisplay("cyclic_2", 500, 500);
+          const c3_webClient  = new FerricyanideDisplay("cyclic_3", 500, 500);
+          const c4_webClient  = new FerricyanideDisplay("cyclic_4", 500, 500);
+          const c5_webClient  = new FerricyanideDisplay("cyclic_5", 500, 500);
+          const c6_webClient  = new FerricyanideDisplay("cyclic_6", 500, 500);
+  
+          const c12_webClient  = new FerricyanideDisplay("cyclic_1_to_2", 500, 500);
+          const c23_webClient  = new FerricyanideDisplay("cyclic_2_to_3", 500, 500);
+          const c34_webClient  = new FerricyanideDisplay("cyclic_3_to_4", 500, 500);
+          const c56_webClient  = new FerricyanideDisplay("cyclic_5_to_6", 500, 500);
+
+          const c1i2_webClient  = new FerricyanideDisplay("cyclic_1_intr_2", 500, 500);
+          const c2i3_webClient  = new FerricyanideDisplay("cyclic_2_intr_3", 500, 500);
+
+          const oxide_webClient  = new FerricyanideDisplay("oxide", 500, 500);
+
+          function init_mol(file, webClient) {
+            fetch(file)
+              .then(result => result.arrayBuffer())
+              .then(data => webClient.add_molecule(new Uint8Array(data), "xyz"))
+              .catch(error => console.error(error));
+          }
+
+          init_mol("ben.xyz", ben_webClient)
+          init_mol("benzoic_acid.xyz", acid_webClient)
+          init_mol("pinc.xyz", pinc_webClient)
+  
+          init_mol("cyclic_1.xyz", c1_webClient)
+          init_mol("cyclic_2.xyz", c2_webClient)
+          init_mol("cyclic_3.xyz", c3_webClient)
+          init_mol("cyclic_4.xyz", c4_webClient)
+          init_mol("cyclic_5.xyz", c5_webClient)
+          init_mol("cyclic_6.xyz", c6_webClient)
+
+          init_mol("cyclic_1_to_2.xyz", c12_webClient)
+          init_mol("cyclic_2_to_3.xyz", c23_webClient)
+          init_mol("cyclic_3_to_4.xyz", c34_webClient)
+          init_mol("cyclic_5_to_6.xyz", c56_webClient)
+
+          init_mol("cyclic_1_intr_2.xyz", c1i2_webClient)
+          init_mol("cyclic_2_intr_3.xyz", c2i3_webClient)
+
+          init_mol("ph3po.xyz", oxide_webClient)
+
+          let time = Date.now();
+          
+          function render () {
+            const dt = Date.now() - time
+  
+            ben_webClient.update_time(dt)
+            ben_webClient.render()
+
+            acid_webClient.update_time(dt)
+            acid_webClient.render()
+
+            pinc_webClient.update_time(dt)
+            pinc_webClient.render()
+
+            c1_webClient.update_time(dt)
+            c1_webClient.render()
+
+            c2_webClient.update_time(dt)
+            c2_webClient.render()
+
+            c3_webClient.update_time(dt)
+            c3_webClient.render()
+
+            c4_webClient.update_time(dt)
+            c4_webClient.render()
+
+            c5_webClient.update_time(dt)
+            c5_webClient.render()
+
+            c6_webClient.update_time(dt)
+            c6_webClient.render()
+    
+            c12_webClient.update_time(dt)
+            c12_webClient.render()
+
+            c23_webClient.update_time(dt)
+            c23_webClient.render()
+
+            c34_webClient.update_time(dt)
+            c34_webClient.render()
+
+            c56_webClient.update_time(dt)
+            c56_webClient.render()
+
+            c1i2_webClient.update_time(dt)
+            c1i2_webClient.render()
+
+            c2i3_webClient.update_time(dt)
+            c2i3_webClient.render()
+
+            oxide_webClient.update_time(dt)
+            oxide_webClient.render()
+
+            window.requestAnimationFrame(render)
+  
+            time = Date.now()
+          }
+  
+          render()
+        }
+  
+        run();
+      </script>
+</head>
+
+<body>
+	<section id="welcome" class="welcome-section">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12">
+					<h1>Reaction Mechanism between the cyclic Sulfonylimine, (N-Isocyanoimino)triphenylphosphorane, and Benzoic Acid</h1>
+					<p>This page makes use of JSmol to render molecules as an intractable object. This package has two
+						modes: HTML5, and WEBGL. The first is slower and produces a lower quality rendering, but
+						supports showing vibrations and is supported on more devices. Therefore, it has been chosen as
+						the default rendering mode. To reload the page with WEBGL, click <a
+							href="cyclic.html?USE=WEBGL">here</a>, but note that all animations will be disabled.</p>
+					<p>It may take a few minutes for all of the components to load, so be patient! Note that Chrome and
+						similar browsers will not respond until the page is fully loaded, so do not be alarmed if the
+						page does not respond Intermediately! You can tell the page has finished loaded when benzene is
+						displayed below:</p>
+					<div class="molecule-view" style="width: 100px; height: 100px;">
+                        <div id="benzene"></div>
+					</div>
+					<p>If Web-based applications are too slow, please download the Gaussian16 output files and formatted
+						checkpoint files, which are provided as links on this webpage and on the associated GitHub
+						profile.</p>
+					<h2>The Mechanism is divided into the following parts:</h2>
+					<p><a class="btn btn-primary page-scroll" href="#starting_material">Starting material</a> <a
+							class="btn btn-primary page-scroll" href="#interactions">Interactions</a> <a
+							class="btn btn-primary page-scroll" href="#transition_states">Transition States</a> <a
+							class="btn btn-primary page-scroll" href="#intermediates">Intermediates</a> <a
+							class="btn btn-primary page-scroll" href="#products">Products</a></p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section id="starting_material" class="about-section">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-lg-12">
+					<h1>Starting Material</h1>
+					<p>Below is the starting materials for the reaction. When summed together, the total &Delta;G is 0
+						as these reactants serve as the reference state for all other steps in the reaction.</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-4">
+					<p>Starting Sulfonylimine (Gaussian <a href="cyclic/cyclic_1.g16">output</a> and <a
+							href="cyclic/cyclic_1.fchk.gz">checkpoint</a>)</p>
+					<p>Fullscreen <a href="single.html?USE=HTML5&FILE=cyclic/cyclic_1.g16">HTML5</a> <a
+							href="single.html?USE=WEBGL&FILE=cyclic/cyclic_1.g16">WEBGL</a></p>
+				</div>
+				<div class="col-lg-4">
+					<p>Benzoic Acid (Gaussian <a href="benzoic_acid.g16">output</a> and <a
+							href="benzoic_acid.fchk.gz">checkpoint</a>)</p>
+					<p>Fullscreen <a href="single.html?USE=HTML5&FILE=benzoic_acid.g16">HTML5</a> <a
+							href="single.html?USE=WEBGL&FILE=benzoic_acid.g16">WEBGL</a></p>
+
+				</div>
+				<div class="col-lg-4">
+					<p>(N-Isocyanoimino)triphenylphosphorane (Gaussian <a href="pinc.g16">output</a> and <a
+							href="pinc.fchk.gz">checkpoint</a>)</p>
+					<p>Fullscreen <a href="single.html?USE=HTML5&FILE=pinc.g16">HTML5</a> <a
+							href="single.html?USE=WEBGL&FILE=pinc.g16">WEBGL</a></p>
+
+				</div>
+			</div>
+			<div class="row" style="height:500px;">
+				<div class="col-lg-4 molecule-view">
+                    <div id="cyclic_1"></div>
+				</div>
+				<div class="col-lg-4 molecule-view">
+                    <div id="acid"></div>
+				</div>
+				<div class="col-lg-4 molecule-view">
+                    <div id="pinc"></div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section id="interactions" class="about-section">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-lg-12">
+					<h1>Interactions between reactants</h1>
+					<p>These are interaction structures formed between the reactants before a transition state can be
+						formed.</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6">
+					<p>Interaction between the starting material and (N-Isocyanoimino)triphenylphosphorane (Gaussian <a
+							href="cyclic/cyclic_1_intr_2.g16">output</a> and <a
+							href="cyclic/cyclic_1_intr_2.fchk.gz">checkpoint</a>) </p>
+					<p>Fullscreen <a href="single.html?USE=HTML5&FILE=cyclic/cyclic_1_intr_2.g16">HTML5</a> <a
+							href="single.html?USE=WEBGL&FILE=cyclic/cyclic_1_intr_2.g16">WEBGL</a></p>
+				</div>
+				<div class="col-lg-6">
+					<p>Interaction between intermediate 1 and benzoic acid (Gaussian <a
+							href="cyclic/cyclic_2_intr_3.g16">output</a> and <a
+							href="cyclic/cyclic_2_intr_3.fchk.gz">checkpoint</a>) </p>
+					<p>Fullscreen <a href="single.html?USE=HTML5&FILE=cyclic/cyclic_2_intr_3.g16">HTML5</a> <a
+							href="single.html?USE=WEBGL&FILE=cyclic/cyclic_2_intr_3.g16">WEBGL</a></p>
+
+				</div>
+			</div>
+			<div class="row" style="height:500px;">
+				<div class="col-lg-6 molecule-view">
+                    <div id="cyclic_1_intr_2"></div>
+				</div>
+				<div class="col-lg-6 molecule-view">
+                    <div id="cyclic_2_intr_3"></div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section id="transition_states" class="about-section">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-lg-12">
+					<h1>Transition States</h1>
+					<p>Below are the four transition states for the reaction shown in an interactive JSmol applet. By
+						default, the sole negative frequency is shown, but this can be turned off using the toggle links
+						below the animation. Additional vibrations can be loaded by right clicking the application and
+						selecting a different model.</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-3">
+					<p>Attack of (N-Isocyanoimino)triphenylphosphorane onto the Sulfonylimine </p>
+					<p>Vibration: <a href="javascript:Jmol.script(cyclic_1_to_2,'vibration on')">On</a> <a
+							href="javascript:Jmol.script(cyclic_1_to_2,'vibration off')">Off</a></p>
+					<p>Gaussian <a href="cyclic/cyclic_1_to_2.g16">output</a> and <a
+							href="cyclic/cyclic_1_to_2.fchk.gz">checkpoint</a></p>
+					<p>Fullscreen <a href="single.html?USE=HTML5&FILE=cyclic/cyclic_1_to_2.g16">HTML5</a> <a
+							href="single.html?USE=WEBGL&FILE=cyclic/cyclic_1_to_2.g16">WEBGL</a></p>
+				</div>
+				<div class="col-lg-3">
+					<p>Attack of the Carboxylic acid onto Intermediate-1 </p>
+					<p>Vibration: <a href="javascript:Jmol.script(cyclic_2_to_3,'vibration on')">On</a> <a
+							href="javascript:Jmol.script(cyclic_2_to_3,'vibration off')">Off</a></p>
+					<p>Gaussian <a href="cyclic/cyclic_2_to_3.g16">output</a> and <a
+							href="cyclic/cyclic_2_to_3.fchk.gz">checkpoint</a></p>
+					<p>Fullscreen <a href="single.html?USE=HTML5&FILE=cyclic/cyclic_2_to_3.g16">HTML5</a> <a
+							href="single.html?USE=WEBGL&FILE=cyclic/cyclic_2_to_3.g16">WEBGL</a></p>
+
+				</div>
+				<div class="col-lg-3">
+					<p>Ring closing step</p>
+					<p>Vibration: <a href="javascript:Jmol.script(cyclic_3_to_4,'vibration on')">On</a> <a
+							href="javascript:Jmol.script(cyclic_3_to_4,'vibration off')">Off</a></p>
+					<p>Gaussian <a href="cyclic/cyclic_3_to_4.g16">output</a> and <a
+							href="cyclic/cyclic_3_to_4.fchk.gz">checkpoint</a></p>
+					<p>Fullscreen <a href="single.html?USE=HTML5&FILE=cyclic/cyclic_3_to_4.g16">HTML5</a> <a
+							href="single.html?USE=WEBGL&FILE=cyclic/cyclic_3_to_4.g16">WEBGL</a></p>
+
+				</div>
+				<div class="col-lg-3">
+					<p>Removal of Ph<sub>3</sub>P=0</p>
+					<p>Vibration: <a href="javascript:Jmol.script(cyclic_5_to_6,'vibration on')">On</a> <a
+							href="javascript:Jmol.script(cyclic_5_to_6,'vibration off')">Off</a></p>
+					<p>Gaussian <a href="cyclic/cyclic_5_to_6.g16">output</a> and <a
+							href="cyclic/cyclic_5_to_6.fchk.gz">checkpoint</a></p>
+					<p>Fullscreen <a href="single.html?USE=HTML5&FILE=cyclic/cyclic_5_to_6.g16">HTML5</a> <a
+							href="single.html?USE=WEBGL&FILE=cyclic/cyclic_5_to_6.g16">WEBGL</a></p>
+
+				</div>
+			</div>
+			<div class="row" style="height:500px;">
+				<div class="col-lg-3 molecule-view">
+					<div id="cyclic_1_to_2"></div>
+				</div>
+				<div class="col-lg-3 molecule-view">
+					<div id="cyclic_2_to_3"></div>
+				</div>
+				<div class="col-lg-3 molecule-view">
+					<div id="cyclic_3_to_4"></div>
+				</div>
+				<div class="col-lg-3 molecule-view">
+					<div id="cyclic_5_to_6"></div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section id="intermediates" class="about-section">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-lg-12">
+					<h1>Intermediate States</h1>
+					<p>
+						Below are the intermediates for the reaction.
+					</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-3">
+					<p>Intermediate 1 (Gaussian <a href="cyclic/cyclic_2.g16">output</a> and <a
+							href="cyclic/cyclic_2.fchk.gz">checkpoint</a>)</p>
+					<p>Fullscreen <a href="single.html?USE=HTML5&FILE=cyclic/cyclic_2.g16">HTML5</a> <a
+							href="single.html?USE=WEBGL&FILE=cyclic/cyclic_2.g16">WEBGL</a></p>
+				</div>
+				<div class="col-lg-3">
+					<p>Intermediate 2 (Gaussian <a href="cyclic/cyclic_3.g16">output</a> and <a
+							href="cyclic/cyclic_3.fchk.gz">checkpoint</a>)</p>
+					<p>Fullscreen <a href="single.html?USE=HTML5&FILE=cyclic/cyclic_3.g16">HTML5</a> <a
+							href="single.html?USE=WEBGL&FILE=cyclic/cyclic_3.g16">WEBGL</a></p>
+				</div>
+				<div class="col-lg-3">
+					<p>Intermediate 3 (Gaussian <a href="cyclic/cyclic_4.g16">output</a> and <a
+							href="cyclic/cyclic_4.fchk.gz">checkpoint</a>)</p>
+					<p>Fullscreen <a href="single.html?USE=HTML5&FILE=cyclic/cyclic_4.g16">HTML5</a> <a
+							href="single.html?USE=WEBGL&FILE=cyclic/cyclic_4.g16">WEBGL</a></p>
+
+				</div>
+				<div class="col-lg-3">
+					<p>Oxazaphosphetidine Intermediate (Gaussian <a href="cyclic/cyclic_5.g16">output</a> and <a
+							href="cyclic/cyclic_5.fchk.gz">checkpoint</a>)</p>
+					<p>Fullscreen <a href="single.html?USE=HTML5&FILE=cyclic/cyclic_5.g16">HTML5</a> <a
+							href="single.html?USE=WEBGL&FILE=cyclic/cyclic_5.g16">WEBGL</a></p>
+				</div>
+			</div>
+			<div class="row" style="height:500px;">
+				<div class="col-lg-3 molecule-view">
+                    <div id="cyclic_2"></div>
+				</div>
+				<div class="col-lg-3 molecule-view">
+                    <div id="cyclic_3"></div>
+				</div>
+				<div class="col-lg-3 molecule-view">
+                    <div id="cyclic_4"></div>
+				</div>
+				<div class="col-lg-3 molecule-view">
+                    <div id="cyclic_5"></div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section id="products" class="about-section">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-lg-12">
+					<h1>Products</h1>
+					<p>The products of the reaction are an oxadiazole and Ph<sub>3</sub>P=O.</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6">
+					<p>The resulting oxadiazole (Gaussian <a href="cyclic/cyclic_6.g16">output</a> and <a
+							href="cyclic/cyclic_6.fchk.gz">checkpoint</a>)</p>
+					<p>Fullscreen <a href="single.html?USE=HTML5&FILE=cyclic/cyclic_6.g16">HTML5</a> <a
+							href="single.html?USE=WEBGL&FILE=cyclic/cyclic_6.g16">WEBGL</a></p>	
+				</div>
+				<div class="col-lg-6">
+					<p>Ph<sub>3</sub>P=O (Gaussian <a href="ph3po.g16">output</a> and <a
+							href="ph3po.fchk.gz">checkpoint</a>)</p>
+					<p>Fullscreen <a href="single.html?USE=HTML5&FILE=ph3po.g16">HTML5</a> <a
+							href="single.html?USE=WEBGL&FILE=ph3po.g16">WEBGL</a></p>		
+				</div>
+			</div>
+			<div class="row" style="height:500px;">
+				<div class="col-lg-6 molecule-view">
+                    <div id="cyclic_6"></div>
+				</div>
+				<div class="col-lg-6 molecule-view">
+                    <div id="oxide"></div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Bootstrap Core JavaScript -->
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+		integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+		integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+		crossorigin="anonymous"></script>
+
+</body>
+
+</html>
