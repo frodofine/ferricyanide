@@ -1,0 +1,23 @@
+{
+  "name": "ferricyanide",
+  "collaborators": [
+    "Jonathan Fine <finej@purdue.edu>"
+  ],
+  "description": "Molecular viewer targeting WebAssembly",
+  "version": "0.1.0",
+  "license": "MIT/Apache-2",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/frodofine/ferricyanide"
+  },
+  "files": [
+    "package_bg.wasm",
+    "package.js",
+    "package.d.ts",
+    "LICENSE-APACHE",
+    "LICENSE-MIT"
+  ],
+  "module": "package.js",
+  "types": "package.d.ts",
+  "sideEffects": false
+}
