@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
+  </head>
+  <body>
+    <div id="benzene"> </div>
+    <div id="p30"> </div>
+    <!-- Note the usage of `type=module` here as this is an ES6 module -->
+    <script type="module">
+
+      import init, { FerricyanideDisplay } from './pkg/package.js';
+
+      async function run() {
+        await init();
+
+        const webClient  = new FerricyanideDisplay("benzene", 512, 512);
+        const webClient2 = new FerricyanideDisplay("p30", 600, 480);
+
+        fetch("ben.xyz")
+          .then(result => result.arrayBuffer())
+          .then(data => webClient.add_molecule(new Uint8Array(data), "xyz"))
+          .catch(error => console.error(error));
+
+        fetch("p30.xyz")
+          .then(result => result.arrayBuffer())
+          .then(data => webClient2.add_molecule(new Uint8Array(data), "xyz"))
+          .catch(error => console.error(error));
+
+        let time = Date.now();
+        
+        function render () {
+          const dt = Date.now() - time
+
+          webClient.update_time(dt)
+          webClient.render()
+
+          webClient2.update_time(dt)
+          webClient2.render()
+
+          window.requestAnimationFrame(render)
+
+          time = Date.now()
+        }
+
+        render()
+      }
+
+      run();
+    </script>
+  </body>
+</html>
