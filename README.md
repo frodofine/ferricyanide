@@ -10,6 +10,10 @@ Molecular viewer targeting WebAssembly (WASM).
 
 This project has no real goals other than as an experiment in WASM and WebGL development. For this experiment, the following sub-goals should be followed.
 
+## Demonstration
+
+A demo of ferricyanide is given [here](https://frodofine.github.com/ferricyanide). It shows the conversion of a JSmol-based page into a page which uses the ferricyanide WASM application to visualize the molecules. The original site is displayed [here](https://chopralab.github.io/n_sulfonylimine_reactions/cyclic.html?USE=WEBGL). Note that this project was made by the developers of ferricyanide and may not utilize the best practices for deploying JSmol.
+
 ### Extendability
 
 ### Code size
