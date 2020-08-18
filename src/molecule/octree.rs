@@ -12,13 +12,11 @@ enum Interaction {
     Contains,
 }
 
-#[allow(dead_code)]
 struct Boundary {
     pub center: [f32; 3],
     pub h_side: f32,
 }
 
-#[allow(dead_code)]
 impl Boundary {
     pub fn from_points(points: &[[f32; 3]]) -> Self {
         let min_v = [
@@ -85,14 +83,12 @@ impl Boundary {
     }
 }
 
-#[allow(dead_code)]
 struct Octnode {
     children: [Option<Box<Octnode>>; 8],
     boundary: Boundary,
     point_indicies: Vec<usize>,
 }
 
-#[allow(dead_code)]
 impl Octnode {
     fn new(boundary: Boundary) -> Self {
         Self {
@@ -211,13 +207,11 @@ impl Octnode {
     }
 }
 
-#[allow(dead_code)]
 pub struct Octree<'a> {
     root: Octnode,
     points: &'a [[f32; 3]],
 }
 
-#[allow(dead_code)]
 impl<'a> Octree<'a> {
     pub fn new(points: &'a [[f32; 3]], threshold: usize, maximum_depth: usize) -> Self {
         let point_indicies: Vec<_> = (0..points.len()).collect();
@@ -255,6 +249,7 @@ impl<'a> Octree<'a> {
         })
     }
 
+    #[allow(dead_code)]
     pub fn interactions(&self, radius: f32) -> Vec<Vec<usize>> {
         let mut result = Vec::<Vec<usize>>::new();
 

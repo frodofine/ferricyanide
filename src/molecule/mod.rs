@@ -1,19 +1,68 @@
 use std::error::Error;
-use std::rc::Rc;
 
 pub mod element;
 pub use element::Element;
 
 pub mod octree;
 
-pub struct Atom {
-    pub position: [f32; 3],
-    pub element: Element,
+pub struct Atom<'a> {
+    pub position: &'a[f32; 3],
+    pub element: &'a Element,
+}
+
+pub struct Atoms<'a> {
+    positions: &'a Vec<[f32; 3]>,
+    elements: &'a Vec<Element>,
+    current: usize,
+}
+
+impl<'a> Iterator for Atoms<'a> {
+
+    type Item = Atom<'a>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.current = self.current + 1;
+        if self.current > self.positions.len() {
+            None
+        } else {
+            Some(Atom{
+                position: &self.positions[self.current - 1],
+                element: &self.elements[self.current - 1],
+            })
+        }
+    }
+}
+
+pub struct Bond<'a> {
+    pub atom_1: Atom<'a>,
+    pub atom_2: Atom<'a>,
+}
+
+pub struct Bonds<'a> {
+    molecule: &'a Molecule,
+    bonds: &'a Vec<[usize; 2]>,
+    current: usize,
+}
+
+impl<'a> Iterator for Bonds<'a> {
+
+    type Item = Bond<'a>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.current = self.current + 1;
+        if self.current > self.bonds.len() {
+            None
+        } else {
+            let bond = self.molecule.bond(self.current - 1);
+            Some(bond)
+        }
+    }
 }
 
 pub struct Molecule {
-    pub atoms: Vec<Rc<Atom>>,
-    pub bonds: Vec<[Rc<Atom>; 2]>,
+    positions: Vec<[f32; 3]>,
+    elements: Vec<Element>,
+    bonds: Vec<[usize; 2]>,
     pub name: String,
 }
 
@@ -29,7 +78,8 @@ pub fn unwrap_abort<T>(o: Option<T>) -> T {
 pub fn read_xyz(file: &str) -> Result<Molecule, Box<dyn Error>> {
     use webgl_matrix::Vector;
 
-    let mut atoms = Vec::<Rc<Atom>>::new();
+    let mut positions = Vec::<[f32; 3]>::new(); 
+    let mut elements = Vec::<Element>::new();
     let mut name = String::new();
 
     let mut total_lines: usize = 0;
@@ -49,32 +99,31 @@ pub fn read_xyz(file: &str) -> Result<Molecule, Box<dyn Error>> {
                 let y: f32 = unwrap_abort(line_split.get(2)).parse()?;
                 let z: f32 = unwrap_abort(line_split.get(3)).parse()?;
 
-                atoms.push(Rc::new(Atom {
-                    position: [x, y, z],
-                    element: Element::from(element),
-                }))
+                positions.push([x, y, z]);
+                elements.push(Element::from(element));
             }
         }
 
-        if total_lines == atoms.len() {
+        if total_lines == positions.len() {
             break;
         }
     }
 
-    let mut bonds = Vec::<[Rc<Atom>; 2]>::new();
+    let mut bonds = Vec::<[usize; 2]>::new();
 
-    for i in 0..atoms.len() {
-        for j in (i + 1)..atoms.len() {
-            let atom_1 = unwrap_abort(atoms.get(i));
-            let atom_2 = unwrap_abort(atoms.get(j));
-            let dist_vec = atom_1.position.sub(&atom_2.position);
-            if dist_vec.mag() < 2.0 {
-                bonds.push([atom_1.clone(), atom_2.clone()]);
-            }
+    let octree = octree::Octree::new(&positions, 100, 5);
+    let interactions = octree.interaction_pairs(2.);
+
+    for i in interactions {
+        let atom_1 = unwrap_abort(positions.get(i[0]));
+        let atom_2 = unwrap_abort(positions.get(i[1]));
+        let dist_vec = atom_1.sub(atom_2);
+        if dist_vec.mag() < 2.0 {
+            bonds.push([i[0], i[1]]);
         }
     }
 
-    Ok(Molecule { atoms, bonds, name })
+    Ok(Molecule { positions, elements, bonds, name })
 }
 
 #[derive(Debug)]
@@ -91,20 +140,52 @@ impl std::fmt::Display for UnsupportedFormat {
 impl std::error::Error for UnsupportedFormat {}
 
 impl Molecule {
+
+    pub fn atom(&self, id: usize) -> Atom {
+        Atom {
+            position: &self.positions[id],
+            element: &self.elements[id],
+        }        
+    }
+
+    pub fn atoms(&self) -> Atoms {
+        Atoms {
+            positions: &self.positions,
+            elements: &self.elements,
+            current: 0,
+        }
+    }
+
+    pub fn bond(&self, id: usize) -> Bond {
+        let bond = &self.bonds[id];
+        Bond {
+            atom_1: self.atom(bond[0]),
+            atom_2: self.atom(bond[1]),
+        }
+    }
+
+    pub fn bonds(&self) -> Bonds {
+        Bonds {
+            molecule: self,
+            bonds: &self.bonds,
+            current: 0,
+        }
+    }
+
     pub fn center(&self) -> [f32; 3] {
         #![allow(clippy::cast_precision_loss)]
         use webgl_matrix::Vector;
 
-        self.atoms
+        self.positions
             .iter()
             .fold([0.0, 0.0, 0.0], |acc, x| {
                 [
-                    acc[0] + x.position[0],
-                    acc[1] + x.position[1],
-                    acc[2] + x.position[2],
+                    acc[0] + x[0],
+                    acc[1] + x[1],
+                    acc[2] + x[2],
                 ]
             })
-            .scale(1.0 / self.atoms.len() as f32)
+            .scale(1.0 / self.positions.len() as f32)
     }
 
     pub fn from_string_with_format(contents: &str, format: &str) -> Result<Self, Box<dyn Error>> {

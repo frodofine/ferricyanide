@@ -77,20 +77,18 @@ impl WebRenderer {
         self.prepare_for_render(gl, &new_cylinder, "cylinder");
 
         for molecule in molecules {
-            for bond in &molecule.bonds {
-                let atom1 = &bond[0];
-                let atom2 = &bond[1];
+            for bond in molecule.bonds() {
 
-                new_cylinder.position_start = atom1.position;
-                new_cylinder.position_end = atom2.position;
+                new_cylinder.position_start = *bond.atom_1.position;
+                new_cylinder.position_end = *bond.atom_2.position;
 
-                new_cylinder.color_start = atom1.element.cpk_color();
-                new_cylinder.color_end = atom2.element.cpk_color();
+                new_cylinder.color_start = bond.atom_1.element.cpk_color();
+                new_cylinder.color_end = bond.atom_2.element.cpk_color();
 
-                new_cylinder.radius = atom1
+                new_cylinder.radius = bond.atom_1
                     .element
                     .covalent_radius()
-                    .min(atom2.element.covalent_radius())
+                    .min(bond.atom_2.element.covalent_radius())
                     / 8.0;
 
                 if new_cylinder.radius < 0.05 {
@@ -112,9 +110,9 @@ impl WebRenderer {
         self.prepare_for_render(gl, &new_sphere, "sphere");
 
         for molecule in molecules {
-            for atom in &molecule.atoms {
+            for atom in molecule.atoms() {
                 new_sphere.color = atom.element.cpk_color();
-                new_sphere.position = atom.position;
+                new_sphere.position = *atom.position;
                 new_sphere.radius = atom.element.covalent_radius() * 0.5;
 
                 new_sphere.render(gl, state);

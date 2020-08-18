@@ -56,11 +56,3 @@ impl FerricyanideDisplay {
             .render(&self.gl, &self.app.store.borrow().state)
     }
 }
-
-/// # Errors
-///
-/// This function cannot fail
-#[wasm_bindgen(start)]
-pub fn main() -> Result<(), JsValue> {
-    Ok(())
-}
