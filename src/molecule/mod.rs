@@ -10,53 +10,9 @@ pub struct Atom<'a> {
     pub element: &'a Element,
 }
 
-pub struct Atoms<'a> {
-    positions: &'a Vec<[f32; 3]>,
-    elements: &'a Vec<Element>,
-    current: usize,
-}
-
-impl<'a> Iterator for Atoms<'a> {
-
-    type Item = Atom<'a>;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        self.current = self.current + 1;
-        if self.current > self.positions.len() {
-            None
-        } else {
-            Some(Atom{
-                position: &self.positions[self.current - 1],
-                element: &self.elements[self.current - 1],
-            })
-        }
-    }
-}
-
 pub struct Bond<'a> {
     pub atom_1: Atom<'a>,
     pub atom_2: Atom<'a>,
-}
-
-pub struct Bonds<'a> {
-    molecule: &'a Molecule,
-    bonds: &'a Vec<[usize; 2]>,
-    current: usize,
-}
-
-impl<'a> Iterator for Bonds<'a> {
-
-    type Item = Bond<'a>;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        self.current = self.current + 1;
-        if self.current > self.bonds.len() {
-            None
-        } else {
-            let bond = self.molecule.bond(self.current - 1);
-            Some(bond)
-        }
-    }
 }
 
 pub struct Molecule {
@@ -80,29 +36,28 @@ pub fn read_xyz(file: &str) -> Result<Molecule, Box<dyn Error>> {
 
     let mut positions = Vec::<[f32; 3]>::new(); 
     let mut elements = Vec::<Element>::new();
-    let mut name = String::new();
 
-    let mut total_lines: usize = 0;
+    let mut lines = file.lines();
 
-    for (line_count, line) in file.lines().enumerate() {
-        match line_count {
-            0 => total_lines = line.trim_end().parse().unwrap(),
-            1 => name = line.to_owned(),
-            _ => {
-                let line_split: Vec<&str> = line.split_whitespace().collect();
-                /*
-                if line_split.len() < 4 {
-                    return Error(std::error::Error::new("Invalid line"))
-                }*/
-                let element = unwrap_abort(line_split.get(0)).to_owned();
-                let x: f32 = unwrap_abort(line_split.get(1)).parse()?;
-                let y: f32 = unwrap_abort(line_split.get(2)).parse()?;
-                let z: f32 = unwrap_abort(line_split.get(3)).parse()?;
+    let total_lines: usize = unwrap_abort(lines.next()).trim_end().parse().unwrap();
+    positions.reserve_exact(total_lines);
+    elements.reserve_exact(total_lines);
 
-                positions.push([x, y, z]);
-                elements.push(Element::from(element));
-            }
-        }
+    let name = unwrap_abort(lines.next()).to_owned();
+
+    for line in lines {
+        let line_split: Vec<&str> = line.split_whitespace().collect();
+        /*
+        if line_split.len() < 4 {
+            return Error(std::error::Error::new("Invalid line"))
+        }*/
+        let element = unwrap_abort(line_split.get(0)).to_owned();
+        let x: f32 = unwrap_abort(line_split.get(1)).parse()?;
+        let y: f32 = unwrap_abort(line_split.get(2)).parse()?;
+        let z: f32 = unwrap_abort(line_split.get(3)).parse()?;
+
+        positions.push([x, y, z]);
+        elements.push(Element::from(element));
 
         if total_lines == positions.len() {
             break;
@@ -148,28 +103,26 @@ impl Molecule {
         }        
     }
 
-    pub fn atoms(&self) -> Atoms {
-        Atoms {
-            positions: &self.positions,
-            elements: &self.elements,
-            current: 0,
-        }
+    pub fn atoms(&self) -> Box< dyn Iterator<Item=Atom> + '_> {
+        Box::new(
+            (0..self.positions.len()).map( move |i| {
+                Atom{
+                    position: &self.positions[i],
+                    element: &self.elements[i],
+                }
+            })
+        )
     }
 
-    pub fn bond(&self, id: usize) -> Bond {
-        let bond = &self.bonds[id];
-        Bond {
-            atom_1: self.atom(bond[0]),
-            atom_2: self.atom(bond[1]),
-        }
-    }
-
-    pub fn bonds(&self) -> Bonds {
-        Bonds {
-            molecule: self,
-            bonds: &self.bonds,
-            current: 0,
-        }
+    pub fn bonds(&self) -> Box< dyn Iterator<Item=Bond> + '_> {
+        Box::new(
+            self.bonds.iter().map( move |&x| {
+                Bond {
+                    atom_1: self.atom(x[0]),
+                    atom_2: self.atom(x[1]),
+                }
+            })
+        )
     }
 
     pub fn center(&self) -> [f32; 3] {
