@@ -5,8 +5,10 @@ pub use element::Element;
 
 pub mod octree;
 
+pub mod surface;
+
 pub struct Atom<'a> {
-    pub position: &'a[f32; 3],
+    pub position: &'a [f32; 3],
     pub element: &'a Element,
 }
 
@@ -34,7 +36,7 @@ pub fn unwrap_abort<T>(o: Option<T>) -> T {
 pub fn read_xyz(file: &str) -> Result<Molecule, Box<dyn Error>> {
     use webgl_matrix::Vector;
 
-    let mut positions = Vec::<[f32; 3]>::new(); 
+    let mut positions = Vec::<[f32; 3]>::new();
     let mut elements = Vec::<Element>::new();
 
     let mut lines = file.lines();
@@ -78,7 +80,12 @@ pub fn read_xyz(file: &str) -> Result<Molecule, Box<dyn Error>> {
         }
     }
 
-    Ok(Molecule { positions, elements, bonds, name })
+    Ok(Molecule {
+        positions,
+        elements,
+        bonds,
+        name,
+    })
 }
 
 #[derive(Debug)]
@@ -95,34 +102,25 @@ impl std::fmt::Display for UnsupportedFormat {
 impl std::error::Error for UnsupportedFormat {}
 
 impl Molecule {
-
     pub fn atom(&self, id: usize) -> Atom {
         Atom {
             position: &self.positions[id],
             element: &self.elements[id],
-        }        
+        }
     }
 
-    pub fn atoms(&self) -> Box< dyn Iterator<Item=Atom> + '_> {
-        Box::new(
-            (0..self.positions.len()).map( move |i| {
-                Atom{
-                    position: &self.positions[i],
-                    element: &self.elements[i],
-                }
-            })
-        )
+    pub fn atoms(&self) -> Box<dyn Iterator<Item = Atom> + '_> {
+        Box::new((0..self.positions.len()).map(move |i| Atom {
+            position: &self.positions[i],
+            element: &self.elements[i],
+        }))
     }
 
-    pub fn bonds(&self) -> Box< dyn Iterator<Item=Bond> + '_> {
-        Box::new(
-            self.bonds.iter().map( move |&x| {
-                Bond {
-                    atom_1: self.atom(x[0]),
-                    atom_2: self.atom(x[1]),
-                }
-            })
-        )
+    pub fn bonds(&self) -> Box<dyn Iterator<Item = Bond> + '_> {
+        Box::new(self.bonds.iter().map(move |&x| Bond {
+            atom_1: self.atom(x[0]),
+            atom_2: self.atom(x[1]),
+        }))
     }
 
     pub fn center(&self) -> [f32; 3] {
@@ -132,11 +130,7 @@ impl Molecule {
         self.positions
             .iter()
             .fold([0.0, 0.0, 0.0], |acc, x| {
-                [
-                    acc[0] + x[0],
-                    acc[1] + x[1],
-                    acc[2] + x[2],
-                ]
+                [acc[0] + x[0], acc[1] + x[1], acc[2] + x[2]]
             })
             .scale(1.0 / self.positions.len() as f32)
     }

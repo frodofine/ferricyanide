@@ -1,4 +1,5 @@
 use webgl_matrix::Vector;
+use std::f32;
 
 // ----------------------------------------------------------------------------
 // Based on http://www.flipcode.com/archives/Octree_Implementation.shtml
@@ -236,10 +237,14 @@ impl<'a> Octree<'a> {
         result
     }
 
-    pub fn neighbors_filtered(&self, point: [f32; 3], radius: f32) -> impl Iterator<Item = usize> + '_ {
+    pub fn neighbors_filtered(
+        &self,
+        point: [f32; 3],
+        radius: f32,
+    ) -> impl Iterator<Item = usize> + '_ {
         let result = self.neighbors(point, radius);
 
-        result.into_iter().filter_map( move |p| {
+        result.into_iter().filter_map(move |p| {
             let dist = self.points[p].sub(&point);
             if dist.mag() < radius {
                 Some(p)
@@ -250,18 +255,34 @@ impl<'a> Octree<'a> {
     }
 
     #[allow(dead_code)]
+    pub fn closest_neighbor (
+        &self,
+        point: [f32; 3],
+        radius: f32,
+    ) -> Option<usize> {
+        let neighbors = self.neighbors(point, radius);
+
+        neighbors.into_iter().min_by(move |x, y| {
+            let x_dist = self.points[*x].sub(&point).mag2();
+            let y_dist = self.points[*y].sub(&point).mag2();
+
+            if x_dist < y_dist {
+                std::cmp::Ordering::Less
+            } else if y_dist < x_dist {
+                std::cmp::Ordering::Greater
+            } else {
+                std::cmp::Ordering::Equal
+            }
+        })
+    }
+
+    #[allow(dead_code)]
     pub fn interactions(&self, radius: f32) -> Vec<Vec<usize>> {
         let mut result = Vec::<Vec<usize>>::new();
 
         for i in 0..self.points.len() {
             let neighbors = self.neighbors_filtered(self.points[i], radius);
-            let removed_self = neighbors.filter_map( move |j| {
-                if i != j {
-                    Some(j)
-                } else {
-                    None
-                }
-            });
+            let removed_self = neighbors.filter_map(move |j| if i != j { Some(j) } else { None });
 
             let mut remaining: Vec<usize> = removed_self.collect();
             remaining.sort();
@@ -281,7 +302,7 @@ impl<'a> Octree<'a> {
                 if i.0 < j {
                     result.push([i.0, j]);
                 }
-            }            
+            }
         }
 
         result
@@ -394,4 +415,7 @@ fn test_octree() {
     assert_eq!(bonds2[9], [4, 5]);
     assert_eq!(bonds2[10], [4, 10]);
     assert_eq!(bonds2[11], [5, 11]);
+
+    let closest1 = octree.closest_neighbor([0.81, -1.15, 0.015], 2.);
+    assert_eq!(closest1.unwrap(), 0);
 }
